@@ -1,0 +1,50 @@
+---
+title: "gamma_sim_analysis"
+output: html_document
+---
+
+## Simulation results
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+setwd("~/project/fdr/gamma_sim")
+```
+
+Read in simulation result
+```{r}
+d = read.table("sim.summary")
+attach(d)
+head(d)
+```
+
++ V1: pi0
++ V2: shape parameter of Gamma
++ V3: scale parameter of Gamma
++ V4: robust pi0 estimate (quantile estimator) 
++ V5: ash pi0 estimate
++ V6: ash diagnosis flag (1 indicates potentially uncontrolled fdr)
+
+
+### $\pi_0$ estimate
+
+Boxplot of $\pi_0$ estimates by ASH and q-value methods
+```{r}
+boxplot(V4~V2, ylim=c(0,1), col="navyblue")
+boxplot(V5~V2, ylim=c(0,1), col="darkgreen",add=T)
+abline(h=0.6,lty=2)
+```
+
+
+
+
+
+### model diagnosis efficiency
+
+Proportion of flagged data by the values of shape parameter
+```{r}
+v = round(seq(0.1,0.9,0.1),1)
+rbind(v,sapply(v, function(x) mean(V6[V2==x])))
+```
